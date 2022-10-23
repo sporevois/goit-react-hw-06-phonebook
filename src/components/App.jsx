@@ -1,57 +1,35 @@
-import { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
 import FormAddContact from './FormAddContact/FormAddContact';
 import ContatList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 
-export const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    // getting stored value
-    const initialValue = JSON.parse(localStorage.getItem('contacts'));
-    return initialValue || [];
-  });
-  const [filter, setFilter] = useState('');
+import { useSelector, useDispatch } from 'react-redux';
+import { getFilter, getFilteredContacts } from 'redux/selectors';
+import { addContact, deleteContact } from 'redux/contactsSlice';
+import { setFilter } from 'redux/filterSlice';
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+export const App = () => {
+  const contacts = useSelector(getFilteredContacts);
+  console.log(contacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
   const handleChange = event => {
-    const { name, value } = event.target;
-    switch (name) {
-      case 'filter':
-        return setFilter(value);
-      default:
-        return;
-    }
+    const { value } = event.target;
+    const action = setFilter(value);
+    dispatch(action);
   };
 
-  const addContact = (name, number) => {
+  const onAddContact = (name, number) => {
     if (isDublicate(name)) {
       return alert(`${name} is already in contacts.`);
     }
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-    console.log(newContact);
-    setContacts(prev => [...prev, newContact]);
+    const action = addContact({ name, number });
+    dispatch(action);
   };
 
-  const deleteContact = id => {
-    setContacts(prev => {
-      return prev.filter(contact => contact.id !== id);
-    });
-  };
-
-  const getFilteredContacts = () => {
-    if (!filter) {
-      return contacts;
-    }
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter)
-    );
+  const onDeleteContact = id => {
+    const action = deleteContact(id);
+    dispatch(action);
   };
 
   const isDublicate = name => {
@@ -69,13 +47,10 @@ export const App = () => {
       }}
     >
       <h1>Phonebook</h1>
-      <FormAddContact onSubmit={addContact} />
+      <FormAddContact onSubmit={onAddContact} />
       <h2>Contacts</h2>
       <Filter handleChange={handleChange} filter={filter} />
-      <ContatList
-        contacts={getFilteredContacts()}
-        deleteContact={deleteContact}
-      />
+      <ContatList contacts={contacts} deleteContact={onDeleteContact} />
     </div>
   );
 };
