@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { addContact } from 'redux/contactsSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { getFilteredContacts } from 'redux/selectors';
+import { getContacts } from 'redux/selectors';
 import styles from '../FormAddContact/FormAddContact.module.css';
 
 const FormAddContact = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const contacts = useSelector(getFilteredContacts);
+  const { contacts } = useSelector(getContacts);
   const dispatch = useDispatch();
 
   const handleSubmit = event => {
