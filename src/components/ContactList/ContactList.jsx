@@ -23,7 +23,6 @@ const ContatList = () => {
       const result = normalizedName.includes(normalizedFilter);
       return result;
     });
-    console.log(filteredContacts);
     return filteredContacts;
   };
 
