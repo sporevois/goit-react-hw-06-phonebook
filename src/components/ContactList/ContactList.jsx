@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styles from '../ContactList/ContactList.module.css';
 import { getContacts, getFilter } from 'redux/selectors';
 import { deleteContact } from 'redux/contactsSlice';
@@ -8,7 +7,6 @@ const ContatList = () => {
   const { contacts } = useSelector(getContacts);
   const filter = useSelector(getFilter);
   const dispatch = useDispatch();
-  console.log(contacts);
 
   const onDeleteContact = id => {
     const action = deleteContact(id);
@@ -47,13 +45,4 @@ const ContatList = () => {
   );
 };
 
-ContatList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-};
 export default ContatList;
